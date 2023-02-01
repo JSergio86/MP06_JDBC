@@ -44,13 +44,15 @@ public class ACBMain {
 				break;
 
 			case 6:
-				tablas.buscarElemento();
+				tablas.selecConcreto();
 				break;
 
 			case 7:
+				tablas.modificarRegistro();
 				break;
 
 			case 8:
+				tablas.borrarRegistro();
 				break;
 
 			case 9:

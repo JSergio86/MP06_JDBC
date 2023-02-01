@@ -7,9 +7,8 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Tablas {
-    String dbURL="jdbc:postgresql://192.168.22.142:5432/jdbc";
+    String dbURL="jdbc:postgresql://192.168.1.52:5432/jdbc";
     Connection conn;
-
     {
         try {
             conn = DriverManager.getConnection( dbURL, "sergio","password");
@@ -44,10 +43,12 @@ public class Tablas {
         rellenarTablaPlayerWeapons();
         rellenarTablaPlayerAgentes();
     }
+
     public void eliminarTablas() throws SQLException {
         PreparedStatement ps = conn.prepareStatement("DROP TABLE jugadores,mapas, armas, partidas, agentes, playeragentes,playerweapons CASCADE");
         ps.executeUpdate();
     }
+
     public void selectColumna() throws SQLException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Escribe la tabla que quieres buscar");
@@ -61,6 +62,7 @@ public class Tablas {
         }
         rs.close();
     }
+
     public void selectTabla() throws SQLException {
         Scanner sc = new Scanner(System.in);
         System.out.println("Escribe la tabla que quieres buscar");
@@ -80,7 +82,7 @@ public class Tablas {
         rs.close();
     }
 
-    public void buscarElemento() throws SQLException {
+    public void selecConcreto() throws SQLException {
         Scanner sc = new Scanner(System.in);
         System.out.println("¿Que tabla quieres leer?");
         String tabla = sc.next();
@@ -126,20 +128,93 @@ public class Tablas {
 
     }
 
-    public void modificarTabla() throws SQLException {
+    public void modificarRegistro() throws SQLException {
         Scanner sc = new Scanner(System.in);
-        System.out.println("¿Que tabla quieres modificar?");
-        String tabla = sc.next();
-        System.out.println("¿Que columna quieres modificar?");
-        String columna = sc.next();
-        System.out.println("¿Que valor quieres?");
-        String valor = sc.next();
-        System.out.println("¿Que columna quieres eliminar?");
-        String columnaDelete = sc.next();
-        System.out.println("¿Que nombre quieres eliminar?");
-        String valorDelete = sc.next();
+        System.out.println("Introduce el nombre de la tabla que quieres modificar: ");
+        String table = sc.nextLine();
+        System.out.println("Introduce el nombre de la columna que quieres modificar: ");
+        ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ table);
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        System.out.println();
 
-        st.executeUpdate("UPDATE"+tabla+"");
+        // Imprimir el nombre de cada columna
+        for (int i = 1; i <= columnCount; i++) {
+            System.out.print(metaData.getColumnName(i) + " ");
+        }
+        System.out.println();
+
+        // Recorrer cada fila del ResultSet
+        while (rs.next()) {
+            // Recorrer cada columna de la fila actual
+            for (int i = 1; i <= columnCount; i++) {
+                // Imprimir el valor de cada columna
+                System.out.print(rs.getString(i) + " ");
+            }
+            System.out.println();
+        }
+        String column = sc.nextLine();
+        System.out.println("Introduce el nuevo valor: ");
+        String value = sc.nextLine();
+        System.out.println("Introduce la columna desde donde se quiere modificar ");
+        String columna = sc.nextLine();
+        System.out.println("Introduce el valor desde donde se quiere modificar ");
+        String valor = sc.nextLine();
+
+        // Crear la sentencia preparada
+        String sql = "UPDATE " + table + " SET " + column + " = "+"\'"+value+"\'"+" WHERE " + columna+" = "+"\'"+valor+"\'";
+        PreparedStatement statement = conn.prepareStatement(sql);
+
+        statement.executeUpdate();
+
+        // Ejecutar la consulta
+        int rows = statement.executeUpdate();
+        System.out.println("Se han modificado " + rows + " fila(s).");
+
+
+    }
+
+    public void borrarRegistro() throws SQLException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Introduce el nombre de la tabla donde quieres eliminar: ");
+        String tabla = sc.nextLine();
+        System.out.println("Introduce el nombre de la columna donde quieres eliminar: ");
+        ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ tabla);
+        ResultSetMetaData metaData = rs.getMetaData();
+        int columnCount = metaData.getColumnCount();
+        System.out.println();
+
+        // Imprimir el nombre de cada columna
+        for (int i = 1; i <= columnCount; i++) {
+            System.out.print(metaData.getColumnName(i) + " ");
+        }
+        System.out.println();
+
+        // Recorrer cada fila del ResultSet
+        while (rs.next()) {
+            // Recorrer cada columna de la fila actual
+            for (int i = 1; i <= columnCount; i++) {
+                // Imprimir el valor de cada columna
+                System.out.print(rs.getString(i) + " ");
+            }
+            System.out.println();
+        }
+        String columna = sc.nextLine();
+        System.out.println("Introduce el valor que desea eliminar: ");
+        String valor = sc.nextLine();
+        //"\'"
+
+        // Crear la sentencia preparada
+        String sql = "DELETE FROM "+tabla+" WHERE "+columna+" = "+ "\'"+valor+"\'";
+        PreparedStatement statement = conn.prepareStatement(sql);
+
+        statement.executeUpdate();
+
+        // Ejecutar la consulta
+        int rows = statement.executeUpdate();
+        System.out.println("Se han eliminado " + rows + " fila(s).");
+
+
     }
 
     public void eliminarUnaTabla() throws SQLException {
