@@ -56,10 +56,11 @@ public class ACBMain {
 				break;
 
 			case 9:
-				tablas.eliminarUnaTabla();
+				tablas.borrarConjunto();
 				break;
 
 			case 10:
+				tablas.eliminarUnaTabla();
 				break;
 
 			case 11:
