@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Tablas {
-    String dbURL="jdbc:postgresql://192.168.22.121:5432/jdbc";
+    String dbURL="jdbc:postgresql://192.168.1.43:5432/jdbc";
     Connection conn;
     {
         try {
@@ -41,6 +41,7 @@ public class Tablas {
             System.out.println("Comprueba el fichero schema.sql: " + e.getMessage());
     }
     }
+
     /**
      * Método para rellenar las tablas en la base de datos.
      *
@@ -67,6 +68,10 @@ public class Tablas {
         System.out.println("Se han rellenado correctamente");
     }
 
+    /**
+     * Elimina todas las tablas jugadores, mapas, armas, partidas, agentes, playeragentes y playerweapons de la base de datos, en cascada.
+     * En caso de no poder eliminar las tablas, muestra un mensaje de error con el mensaje de la excepción lanzada.
+     */
     public void eliminarTablas()  {
         try {
         pr = conn.prepareStatement("DROP TABLE jugadores,mapas, armas, partidas, agentes, playeragentes,playerweapons CASCADE");
@@ -78,10 +83,15 @@ public class Tablas {
         }
     }
 
+    /**
+     * Muestra los datos de una columna específica de una tabla específica de la base de datos.
+     * Pide al usuario escribir el nombre de la tabla y la columna que quiere buscar.
+     * En caso de haber escrito mal el nombre de la tabla o de la columna, muestra un mensaje de error con el mensaje de la excepción lanzada.
+     */
     public void selectColumna() {
         try{
         Scanner sc = new Scanner(System.in);
-        System.out.println("Escribe la tabla que quieres buscar");
+        System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
         String tabla = sc.next();
         System.out.println("Escribe la columna que quieres buscar");
         String columna = sc.next();
@@ -99,10 +109,14 @@ public class Tablas {
         }
     }
 
+    /**
+     * Este método permite seleccionar una tabla completa de una base de datos y mostrar su contenido en consola.
+     * @throws SQLException si hay un error con la base de datos.
+     */
     public void selectTabla() {
         try{
         Scanner sc = new Scanner(System.in);
-        System.out.println("Escribe la tabla que quieres buscar");
+        System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
         String tabla = sc.next();
         System.out.println();
 
@@ -123,10 +137,16 @@ public class Tablas {
         }
     }
 
-    public void selecConcreto() {
+    /**
+     * Método que permite leer una tabla y una columna concreta de una base de datos.
+     * El usuario especifica la tabla y la columna que desea leer, así como una condición para filtrar los resultados.
+     * Si la tabla y la columna existen y cumplen con la condición, se mostrarán los valores de los elementos de la columna.
+     * En caso contrario, se informará al usuario de un error.
+     */
+    public void selectTextoConcreto() {
         try {
         Scanner sc = new Scanner(System.in);
-        System.out.println("¿Que tabla quieres leer?");
+        System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
         String tabla = sc.next();
         System.out.println("¿Que columna quieres leer?");
 
@@ -174,10 +194,59 @@ public class Tablas {
 
     }
 
+    /**
+     * Este método permite seleccionar todos los elementos de una tabla que cumplen una determinada condición, especificada por el usuario.
+     * El usuario introduce el nombre de la tabla que quiere buscar, la columna que quiere usar para la condición, el operador que quiere usar y el valor que quiere usar para la condición. Luego, se crea una sentencia preparada con esta información y se ejecuta.
+     * En caso de que haya un error al ejecutar la consulta, se muestra un mensaje con el error.
+     */
+    public void selectCondicion() {
+            try {
+                Scanner sc = new Scanner(System.in);
+                System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+                String table = sc.nextLine();
+                System.out.println("Introduce la columna que quieres usar para la condición: ");
+                String column = sc.nextLine();
+                System.out.println("Introduce el operador que quieres usar (=, <, >, <=, >=, <>)");
+                String operator = sc.nextLine();
+                System.out.println("Introduce el valor que quieres usar para la condición: ");
+                String value = sc.nextLine();
+
+                PreparedStatement statement = conn.prepareStatement("SELECT * FROM " + table + " WHERE " + column + " " + operator + " " + value);
+                ResultSet rs = statement.executeQuery();
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+
+                System.out.println();
+                for (int i = 1; i <= columnCount; i++) {
+                    System.out.print(metaData.getColumnName(i) +" ");
+
+                }
+                System.out.println();
+
+                // Recorrer cada fila del ResultSet
+                while (rs.next()) {
+                    for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
+                        // Imprimir el valor de cada columna
+                        System.out.print(rs.getString(i) + " ");
+                    }
+                    System.out.println();
+                }
+
+            } catch (SQLException e) {
+                System.out.println("Ocurrió un error: " + e.getMessage());
+            }
+    }
+
+    /**
+     * Modifica un registro en la base de datos.
+     * Este método permite modificar un registro en la base de datos seleccionada.
+     * El usuario introduce el nombre de la tabla, la columna y el nuevo valor a modificar.
+     * Además, se requiere también el nombre de la columna y el valor que se utilizarán para identificar la fila a modificar.
+     */
     public void modificarRegistro() {
         try{
         Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce el nombre de la tabla que quieres modificar: ");
+        System.out.println("Escribe la tabla que quieres modificar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
         String table = sc.nextLine();
         System.out.println("Introduce el nombre de la columna que quieres modificar: ");
         ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ table);
@@ -224,11 +293,15 @@ public class Tablas {
 
     }
 
+    /**
+     * Este método permite borrar un registro en una tabla específica de una base de datos.
+     * La sentencia SQL se construye y se ejecuta para eliminar el registro correspondiente.
+     * En caso de éxito, se informa al usuario que el registro se ha eliminado correctamente,de lo contrario se informa un mensaje de error.
+     */
     public void borrarRegistro() {
         try {
-
         Scanner sc = new Scanner(System.in);
-        System.out.println("Introduce el nombre de la tabla donde quieres eliminar: ");
+        System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
         String tabla = sc.nextLine();
         System.out.println("Introduce el nombre de la columna donde quieres eliminar: ");
         ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ tabla);
@@ -269,21 +342,31 @@ public class Tablas {
         }
 
     }
+
+    /**
+     * Este método permite borrar un conjunto de registros en una tabla específica de una base de datos.
+     * La sentencia SQL se construye y se ejecuta para eliminar los registros correspondientes.
+     * Se informa al usuario el número de filas eliminadas. En caso de error, se informa un mensaje correspondiente.
+     */
     public void borrarConjunto(){
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Ingrese el nombre de la tabla: ");
+        System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
         String tableName = sc.nextLine();
 
         System.out.println("Ingrese la columna objetivo: ");
         String columnName = sc.nextLine();
+
+        System.out.println("Introduce el operador que quieres usar (=, <, >, <=, >=, <>)");
+        String operador = sc.nextLine();
+
 
         System.out.println("Ingrese el valor común del conjunto: ");
         String valor = sc.nextLine();
 
 
         try {
-            String sql = "DELETE FROM " + tableName + " WHERE " + columnName + " = '" + valor + "'";
+            String sql = "DELETE FROM " + tableName + " WHERE " + columnName +" "+ operador +" '"+ valor + "'";
 
             int rowsDeleted = pr.executeUpdate(sql);
 
@@ -293,10 +376,13 @@ public class Tablas {
         }
     }
 
+    /**
+     * Este metodo permite eliminar la tabla que le pasa el usuario.
+     */
     public void eliminarUnaTabla(){
         try {
             Scanner sc = new Scanner(System.in);
-            System.out.println("¿Que tabla quieres borrar?");
+            System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
             String tabla = sc.next();
 
             pr = conn.prepareStatement("DROP TABLE "+tabla+" CASCADE");
@@ -310,6 +396,11 @@ public class Tablas {
 
     }
 
+    /**
+     * Método para rellenar las tabla jugadores en la base de datos.
+     * @throws IOException
+     * @throws SQLException
+     */
     public void rellenarTablaJugadores() throws IOException, SQLException {
         String csvFile = "src/CSV/Jugador.csv";
         String line = "";
@@ -341,6 +432,11 @@ public class Tablas {
         }
     }
 
+    /**
+     * Método para rellenar las tabla mapas en la base de datos.
+     * @throws IOException
+     * @throws SQLException
+     */
     public void rellenarTablaMapas() throws IOException, SQLException {
         String csvFile = "src/CSV/Mapas.csv";
         String line = "";
@@ -366,6 +462,11 @@ public class Tablas {
         }
     }
 
+    /**
+     * Método para rellenar las tabla partidas en la base de datos.
+     * @throws IOException
+     * @throws SQLException
+     */
     public void rellenarTablaPartidas() throws IOException, SQLException {
         String csvFile = "src/CSV/Partidas.csv";
         String line = "";
@@ -388,6 +489,11 @@ public class Tablas {
         }
     }
 
+    /**
+     * Método para rellenar las tabla agentes en la base de datos.
+     * @throws IOException
+     * @throws SQLException
+     */
     public void rellenarTablaAgentes() throws IOException, SQLException {
         String csvFile = "src/CSV/Agentes.csv";
         String line = "";
@@ -408,6 +514,11 @@ public class Tablas {
         }
     }
 
+    /**
+     * Método para rellenar las tabla playeragentes en la base de datos.
+     * @throws IOException
+     * @throws SQLException
+     */
     public void rellenarTablaPlayerAgentes() throws IOException, SQLException {
         String csvFile = "src/CSV/PlayerAgentes.csv";
         String line = "";
@@ -435,6 +546,11 @@ public class Tablas {
         }
     }
 
+    /**
+     * Método para rellenar las tabla armas en la base de datos.
+     * @throws IOException
+     * @throws SQLException
+     */
     public void rellenarTablaArmas() throws IOException, SQLException {
         String csvFile = "src/CSV/Armas.csv";
         String line = "";
@@ -455,6 +571,11 @@ public class Tablas {
         }
     }
 
+    /**
+     * Método para rellenar las tabla playerweapons en la base de datos.
+     * @throws IOException
+     * @throws SQLException
+     */
     public void rellenarTablaPlayerWeapons() throws IOException, SQLException {
         String csvFile = "src/CSV/PlayerWeapon.csv";
         String line = "";

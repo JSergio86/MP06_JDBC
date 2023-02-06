@@ -1,5 +1,5 @@
 CREATE TABLE Jugadores (
-idJugador TEXT PRIMARY KEY,
+idJugador INT PRIMARY KEY,
 rank TEXT,
 wins TEXT,
 kills TEXT,

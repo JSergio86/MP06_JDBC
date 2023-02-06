@@ -21,7 +21,7 @@ public class ACBMain {
 
 
 		int option = menu.mainMenu();
-		while (option > 0 && option < 12) {
+		while (option > 0 && option < 13) {
 			switch (option) {
 			case 1:
 				tablas.crearTablas();
@@ -44,27 +44,31 @@ public class ACBMain {
 				break;
 
 			case 6:
-				tablas.selecConcreto();
+				tablas.selectTextoConcreto();
 				break;
 
 			case 7:
-				tablas.modificarRegistro();
+				tablas.selectCondicion();
 				break;
 
 			case 8:
-				tablas.borrarRegistro();
+				tablas.modificarRegistro();
 				break;
 
 			case 9:
-				tablas.borrarConjunto();
+				tablas.borrarRegistro();
 				break;
 
 			case 10:
-				tablas.eliminarUnaTabla();
+				tablas.borrarConjunto();
 				break;
 
 			case 11:
+				tablas.eliminarUnaTabla();
 				break;
+
+				case 12:
+					break;
 
 			default:
 				System.out.println("Introdueixi una de les opcions anteriors");
