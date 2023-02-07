@@ -76,4 +76,3 @@ longestKill TEXT,
 FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador),
 FOREIGN KEY (idArma) REFERENCES Armas(idArma)
 );
-

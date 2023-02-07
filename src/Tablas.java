@@ -7,27 +7,21 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Tablas {
-    String dbURL="jdbc:postgresql://192.168.1.43:5432/jdbc";
     Connection conn;
-    {
-        try {
-            conn = DriverManager.getConnection( dbURL, "sergio","password");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     Statement st;
+    PreparedStatement pr;
 
-    {
+    public Tablas(Connection c) {
+        this.conn = c;
+
         try {
-            st = conn.createStatement();
+            this.st = this.conn.createStatement();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
     }
-    PreparedStatement pr;
+
     /**
      * Método que permite crear las tablas a partir de un archivo "schema.sql".
      * Si no existe el archivo o hay un error en el proceso, se muestra un mensaje de error.
@@ -37,6 +31,7 @@ public class Tablas {
             pr = conn.prepareStatement(br.lines().collect(Collectors.joining(" \n")));
             pr.execute();
             System.out.println("Se han creado correctamente");
+            Thread.sleep(1000);
         }catch (Exception e){
             System.out.println("Comprueba el fichero schema.sql: " + e.getMessage());
         }
@@ -55,7 +50,7 @@ public class Tablas {
      * @throws IOException Si ocurre un error al procesar el archivo de entrada.
      * @throws SQLException Si ocurre un error al acceder a la base de datos.
      */
-    public void rellenarTablas() throws IOException, SQLException {
+    public void rellenarTablas() throws IOException, SQLException, InterruptedException {
 
         rellenarTablaJugadores();
         rellenarTablaMapas();
@@ -64,8 +59,8 @@ public class Tablas {
         rellenarTablaAgentes();
         rellenarTablaPlayerWeapons();
         rellenarTablaPlayerAgentes();
-
         System.out.println("Se han rellenado correctamente");
+        Thread.sleep(1000);
     }
 
     /**
@@ -77,6 +72,7 @@ public class Tablas {
             pr = conn.prepareStatement("DROP TABLE jugadores,mapas, armas, partidas, agentes, playeragentes,playerweapons CASCADE");
             pr.executeUpdate();
             System.out.println("Se han eliminado correctamente");
+            Thread.sleep(1000);
         }catch (Exception e){
             System.out.println("No se puede eliminar todas las tablas, mira a ver si existen: " + e.getMessage());
 
@@ -124,8 +120,8 @@ public class Tablas {
             while (rs.next()) {
                 System.out.println(rs.getString(columna));
             }
-            Thread.sleep(1000);
             rs.close();
+            Thread.sleep(1000);
 
         }catch (Exception e){
             System.out.println("Comprueba que se ha escrito bien: " + e.getMessage());
@@ -156,6 +152,7 @@ public class Tablas {
             Thread.sleep(1000);
 
             rs.close();
+
         }catch (Exception e){
             System.out.println("Comprueba que existe la tabla " + e.getMessage());
 
@@ -198,10 +195,21 @@ public class Tablas {
             System.out.println();
             System.out.println("Que columna quieres leer?");
             String columna = sc.next();
-            System.out.println("Pon una letra o numero para listar todos los que comiencen por ese numero");
-            String condicion = sc.next();
+            System.out.println("Quieres poner una letra o un numero?. 1-Letra 2-Numero");
+            int opcion=sc.nextInt();
+            String sql = null;
+            if(opcion==1){
+                System.out.println("Pon una letra para listar todos los que comiencen por ese numero");
+                String letra = sc.next();
+                sql="SELECT * FROM " + tabla + " WHERE " + columna + " LIKE '%" + letra + "%'";
+            }
+            if(opcion==2){
+                System.out.println("Pon una numero para listar todos los que comiencen por ese numero");
+                int numero = sc.nextInt();
+                sql = "SELECT * FROM " + tabla + " WHERE CAST("+ columna +" AS TEXT) LIKE '"+numero+"%'";
+            }
+            PreparedStatement ps = conn.prepareStatement(sql);
 
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM " + tabla + " WHERE " + columna + " LIKE '%" + condicion + "%'");
             ResultSet resultSet = ps.executeQuery();
             System.out.println();
             while (resultSet.next()) {
@@ -212,6 +220,8 @@ public class Tablas {
                 System.out.println();
             }
             resultSet.close();
+            Thread.sleep(1000);
+
         }catch (Exception e){
             System.out.println("Comprueba la información proporcionada a la base de datos: " + e.getMessage());
 
@@ -278,9 +288,13 @@ public class Tablas {
                 }
                 System.out.println();
             }
+            Thread.sleep(1000);
+
 
         } catch (SQLException e) {
             System.out.println("Ocurrió un error: " + e.getMessage());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -320,9 +334,9 @@ public class Tablas {
             String column = sc.nextLine();
             System.out.println("Introduce el nuevo valor: ");
             String value = sc.nextLine();
-            System.out.println("Introduce la columna de al lado que quiere modificar ");
+            System.out.println("Introduce la columna de al lado des de donde se quiere modificar ");
             String columna = sc.nextLine();
-            System.out.println("Introduce el valor de al lado que quiere modificar ");
+            System.out.println("Introduce el valor de la columna anterior que esta en la misma linea des de donde se quiere modificar ");
             String valor = sc.nextLine();
 
             // Crear la sentencia preparada
@@ -334,6 +348,8 @@ public class Tablas {
             // Ejecutar la consulta
             int rows = statement.executeUpdate();
             System.out.println("Se han modificado " + rows + " fila(s).");
+            Thread.sleep(1000);
+
         }catch (Exception e){
             System.out.println("Comprueba la información proporcionada a la base de datos: " + e.getMessage());
 
@@ -375,7 +391,7 @@ public class Tablas {
             System.out.println();
             System.out.println("Introduce el nombre de la columna donde quieres eliminar: ");
             String columna = sc.nextLine();
-            System.out.println("Introduce el valor que desea eliminar: ");
+            System.out.println("Introduce el valor que desea eliminar (se eliminaran todos que tengan el mismo valor): ");
             String valor = sc.nextLine();
             //"\'"
 
@@ -385,6 +401,8 @@ public class Tablas {
 
             pr.executeUpdate();
             System.out.println("Se ha eliminado correctamente");
+            Thread.sleep(1000);
+
 
         }catch (Exception e){
             System.out.println("No se ha podido eliminar: " + e.getMessage());
@@ -431,18 +449,20 @@ public class Tablas {
         System.out.println("Introduce el operador que quieres usar (=, <, >, <=, >=, <>)");
         String operador = sc.nextLine();
 
-
         System.out.println("Ingrese el valor común del conjunto: ");
         String valor = sc.nextLine();
 
 
         try {
-            String sql = "DELETE FROM " + tabla + " WHERE " + columnName +" "+ operador +" '"+ valor + "'";
+            String sql = "DELETE FROM " + tabla + " WHERE " + columnName +" "+ operador +" "+ valor;
+
             PreparedStatement pr1 = conn.prepareStatement(sql);
-            int rowsDeleted = pr1.executeUpdate(sql);
+            int rowsDeleted = pr1.executeUpdate();
 
             System.out.println(rowsDeleted + " filas eliminadas");
-        } catch (SQLException e) {
+            Thread.sleep(1000);
+
+        } catch (SQLException | InterruptedException e) {
             System.out.println("Ocurrió un error: " + e.getMessage());
         }
     }
@@ -459,6 +479,7 @@ public class Tablas {
             pr = conn.prepareStatement("DROP TABLE "+tabla+" CASCADE");
             pr.executeUpdate();
             System.out.println("La tabla ha sido eliminada correctamente");
+            Thread.sleep(1000);
 
         }catch (Exception e){
             System.out.println("No se puede eliminar esta tabla, mira a ver si existe: " + e.getMessage());

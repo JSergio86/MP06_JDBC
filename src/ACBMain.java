@@ -8,16 +8,16 @@ import java.util.Scanner;
 
 public class ACBMain {
 
-	public static void main(String[] args) throws IOException, SQLException, ParseException, ClassNotFoundException {
+	public static void main(String[] args) throws IOException, SQLException, ParseException, ClassNotFoundException, InterruptedException {
 		ACBMenu menu = new ACBMenu();
 		Scanner sc = new Scanner(System.in);
 
 		ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 		Connection c = connectionFactory.connect();
 
-		Tablas tablas = new Tablas();
+		Tablas tablas = new Tablas(c);
 
-		Class.forName( "org.postgresql.Driver" );
+		//Class.forName( "org.postgresql.Driver" );
 
 
 		int option = menu.mainMenu();
