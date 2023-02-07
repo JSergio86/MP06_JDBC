@@ -1,73 +1,79 @@
 CREATE TABLE Jugadores (
 idJugador INT PRIMARY KEY,
 rank TEXT,
-wins TEXT,
-kills TEXT,
-deaths TEXT,
-assists TEXT,
-scoreround TEXT,
-kad TEXT,
-killsround TEXT,
-plants TEXT,
-firstbloods TEXT,
-clutches TEXT,
-flawless TEXT,
-aces TEXT
+wins INT,
+kills INT,
+deaths INT,
+assists INT,
+scoreround FLOAT,
+kad FLOAT,
+killsround FLOAT,
+plants INT,
+firstbloods INT,
+clutches INT,
+flawless INT,
+aces INT
 );
 
 CREATE TABLE Mapas (
-idMapa TEXT PRIMARY KEY,
+idMapa INT PRIMARY KEY,
 name TEXT,
 porcentaje_win TEXT,
-wins TEXT,
-losses TEXT,
-kd TEXT,
-adr TEXT,
-acs TEXT
+wins INT,
+losses INT,
+kd FLOAT,
+adr FLOAT,
+acs FLOAT
 );
 
 CREATE TABLE Partidas (
-idJugador TEXT,
-idMapa TEXT ,
-idPartida TEXT PRIMARY KEY,
+idJugador INT,
+idMapa INT,
+idPartida INT PRIMARY KEY,
 type TEXT,
-result TEXT
+result TEXT,
+FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador),
+FOREIGN KEY (idMapa) REFERENCES Mapas(idMapa)
 );
 
 
 CREATE TABLE Agentes(
-idAgente TEXT PRIMARY KEY,
+idAgente INT PRIMARY KEY,
 name TEXT,
 type TEXT
 );
 
 CREATE TABLE PlayerAgentes (
-idJugador TEXT,
-idAgente TEXT,
+idJugador INT,
+idAgente INT,
 timePlayed TEXT,
-matches TEXT,
+matches INT,
 win TEXT,
-kd TEXT,
-adr TEXT,
-acs TEXT,
+kd FLOAT,
+adr FLOAT,
+acs FLOAT,
 hs TEXT,
-kast TEXT
+kast TEXT,
+FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador),
+FOREIGN KEY (idAgente) REFERENCES Agentes(idAgente)
 );
 
 CREATE TABLE Armas (
-idArma TEXT PRIMARY KEY,
+idArma INT PRIMARY KEY,
 name TEXT,
 type TEXT
 );
 
 CREATE TABLE PlayerWeapons (
-idJugador TEXT,
-idArma TEXT,
-kills TEXT,
-deaths TEXT,
+idJugador INT,
+idArma INT,
+kills INT,
+deaths INT,
 headshots TEXT,
-damageRound TEXT,
-killsRound TEXT,
-longestKill TEXT
+damageRound FLOAT,
+killsRound FLOAT,
+longestKill TEXT,
+FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador),
+FOREIGN KEY (idArma) REFERENCES Armas(idArma)
 );
 
