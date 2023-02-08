@@ -117,22 +117,6 @@ public class ConnectionFactory {
 			}
 		}
 	}
-	
-//	public void init() {
-//		Properties prop = new Properties();
-//		InputStream propStream = this.getClass().getClassLoader().getResourceAsStream("db.properties");
-//
-//		try {
-//			prop.load(propStream);
-//			this.host = prop.getProperty("host");
-//			this.port = prop.getProperty("port");
-//			this.dbname = prop.getProperty("dbname");
-//			this.schema = prop.getProperty("schema");
-//		} catch (IOException e) {
-//			String message = "ERROR: db.properties file could not be found";
-//			System.err.println(message);
-//			throw new RuntimeException(message, e);
-//		}
-//	}
+
 	
 }

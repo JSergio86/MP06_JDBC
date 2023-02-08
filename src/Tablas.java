@@ -42,8 +42,8 @@ public class Tablas {
      *
      * Este método llama a los métodos rellenarTablaJugadores(),
      * rellenarTablaArmas(), rellenarTablaMapas(), rellenarTablaPartidas(),
-     * rellenarTablaAgentes(), rellenarTablaPlayerWeapons() y
-     * rellenarTablaPlayerAgentes() para rellenar cada una de las tablas.
+     * rellenarTablaAgentes(), rellenarTablajugadorarmas() y
+     * rellenarTablajugadoragentes() para rellenar cada una de las tablas.
      *
      * En caso de error, se lanza una excepción IOException o SQLException.
      *
@@ -57,19 +57,19 @@ public class Tablas {
         rellenarTablaArmas();
         rellenarTablaPartidas();
         rellenarTablaAgentes();
-        rellenarTablaPlayerWeapons();
-        rellenarTablaPlayerAgentes();
+        rellenarTablajugadorarmas();
+        rellenarTablajugadoragentes();
         System.out.println("Se han rellenado correctamente");
         Thread.sleep(1000);
     }
 
     /**
-     * Elimina todas las tablas jugadores, mapas, armas, partidas, agentes, playeragentes y playerweapons de la base de datos, en cascada.
+     * Elimina todas las tablas jugadores, mapas, armas, partidas, agentes, jugadoragentes y jugadorarmas de la base de datos, en cascada.
      * En caso de no poder eliminar las tablas, muestra un mensaje de error con el mensaje de la excepción lanzada.
      */
     public void eliminarTablas()  {
         try {
-            pr = conn.prepareStatement("DROP TABLE jugadores,mapas, armas, partidas, agentes, playeragentes,playerweapons CASCADE");
+            pr = conn.prepareStatement("DROP TABLE jugadores,mapas, armas, partidas, agentes, jugadoragentes,jugadorarmas CASCADE");
             pr.executeUpdate();
             System.out.println("Se han eliminado correctamente");
             Thread.sleep(1000);
@@ -87,7 +87,7 @@ public class Tablas {
     public void selectColumna() {
         try{
             Scanner sc = new Scanner(System.in);
-            System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+            System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
             String tabla = sc.next();
             ResultSet rs2= st.executeQuery("SELECT *"+ " FROM "+ tabla);
             ResultSetMetaData metaData = rs2.getMetaData();
@@ -100,16 +100,6 @@ public class Tablas {
             }
             System.out.println();
 
-            // Recorrer cada fila del ResultSet
-            while (rs2.next()) {
-                // Recorrer cada columna de la fila actual
-                for (int i = 1; i <= columnCount; i++) {
-                    // Imprimir el valor de cada columna
-                    System.out.print(rs2.getString(i) + " ");
-                }
-                System.out.println();
-            }
-            rs2.close();
             System.out.println();
             System.out.println("Escribe la columna que quieres buscar");
 
@@ -136,11 +126,21 @@ public class Tablas {
     public void selectTabla() {
         try{
             Scanner sc = new Scanner(System.in);
-            System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+            System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
             String tabla = sc.next();
             System.out.println();
 
+
             ResultSet rs = st.executeQuery("SELECT *"+ " FROM "+ tabla);
+            ResultSetMetaData metaData = rs.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            System.out.println();
+
+            // Imprimir el nombre de cada columna
+            for (int i = 1; i <= columnCount; i++) {
+                System.out.print(metaData.getColumnName(i) + " ");
+            }
+            System.out.println();
             while (rs.next()) {
                 // Recorrer cada columna de la fila actual
                 for (int i = 1; i <= rs.getMetaData().getColumnCount(); i++) {
@@ -168,7 +168,7 @@ public class Tablas {
     public void selectTextoConcreto() {
         try {
             Scanner sc = new Scanner(System.in);
-            System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+            System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
             String tabla = sc.next();
 
             ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ tabla);
@@ -204,7 +204,7 @@ public class Tablas {
                 sql="SELECT * FROM " + tabla + " WHERE " + columna + " LIKE '%" + letra + "%'";
             }
             if(opcion==2){
-                System.out.println("Pon una numero para listar todos los que comiencen por ese numero");
+                System.out.println("Pon un numero para listar todos los que comiencen por ese numero");
                 int numero = sc.nextInt();
                 sql = "SELECT * FROM " + tabla + " WHERE CAST("+ columna +" AS TEXT) LIKE '"+numero+"%'";
             }
@@ -237,7 +237,7 @@ public class Tablas {
     public void selectCondicion() {
         try {
             Scanner sc = new Scanner(System.in);
-            System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+            System.out.println("Escribe la tabla que quieres buscar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
             String tabla = sc.nextLine();
             ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ tabla);
             ResultSetMetaData metaData = rs.getMetaData();
@@ -307,7 +307,7 @@ public class Tablas {
     public void modificarRegistro() {
         try{
             Scanner sc = new Scanner(System.in);
-            System.out.println("Escribe la tabla que quieres modificar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+            System.out.println("Escribe la tabla que quieres modificar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
             String table = sc.nextLine();
             ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ table);
             ResultSetMetaData metaData = rs.getMetaData();
@@ -365,7 +365,7 @@ public class Tablas {
     public void borrarRegistro() {
         try {
             Scanner sc = new Scanner(System.in);
-            System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+            System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
             String tabla = sc.nextLine();
 
             ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ tabla);
@@ -419,7 +419,7 @@ public class Tablas {
     public void borrarConjunto() throws SQLException {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+        System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
         String tabla = sc.nextLine();
         ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ tabla);
         ResultSetMetaData metaData = rs.getMetaData();
@@ -473,7 +473,7 @@ public class Tablas {
     public void eliminarUnaTabla(){
         try {
             Scanner sc = new Scanner(System.in);
-            System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,playeragentes,playerweapons,");
+            System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
             String tabla = sc.next();
 
             pr = conn.prepareStatement("DROP TABLE "+tabla+" CASCADE");
@@ -607,15 +607,15 @@ public class Tablas {
     }
 
     /**
-     * Método para rellenar las tabla playeragentes en la base de datos.
+     * Método para rellenar las tabla jugadoragentes en la base de datos.
      * @throws IOException
      * @throws SQLException
      */
-    public void rellenarTablaPlayerAgentes() throws IOException, SQLException {
-        String csvFile = "src/CSV/PlayerAgentes.csv";
+    public void rellenarTablajugadoragentes() throws IOException, SQLException {
+        String csvFile = "src/CSV/jugadoragentes.csv";
         String line = "";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            String sql = "INSERT INTO playeragentes VALUES (?,?,?,?,?,?,?,?,?,?);";
+            String sql = "INSERT INTO jugadoragentes VALUES (?,?,?,?,?,?,?,?,?,?);";
 
             pr = conn.prepareStatement(sql);
             br.readLine();  // Salta la primera línea
@@ -664,15 +664,15 @@ public class Tablas {
     }
 
     /**
-     * Método para rellenar las tabla playerweapons en la base de datos.
+     * Método para rellenar las tabla jugadorarmas en la base de datos.
      * @throws IOException
      * @throws SQLException
      */
-    public void rellenarTablaPlayerWeapons() throws IOException, SQLException {
+    public void rellenarTablajugadorarmas() throws IOException, SQLException {
         String csvFile = "src/CSV/PlayerWeapon.csv";
         String line = "";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            String sql = "INSERT INTO playerweapons VALUES (?,?,?,?,?,?,?,?) ON CONFLICT DO NOTHING;";
+            String sql = "INSERT INTO jugadorarmas VALUES (?,?,?,?,?,?,?,?) ON CONFLICT DO NOTHING;";
 
             pr = conn.prepareStatement(sql);
             br.readLine();  // Salta la primera línea

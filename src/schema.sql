@@ -43,7 +43,7 @@ name TEXT,
 type TEXT
 );
 
-CREATE TABLE PlayerAgentes (
+CREATE TABLE JugadorAgentes (
 idJugador INT,
 idAgente INT,
 timePlayed TEXT,
@@ -64,7 +64,7 @@ name TEXT,
 type TEXT
 );
 
-CREATE TABLE PlayerWeapons (
+CREATE TABLE JugadorArmas (
 idJugador INT,
 idArma INT,
 kills INT,

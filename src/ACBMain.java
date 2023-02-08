@@ -8,17 +8,23 @@ import java.util.Scanner;
 
 public class ACBMain {
 
-	public static void main(String[] args) throws IOException, SQLException, ParseException, ClassNotFoundException, InterruptedException {
+	public static void main(String[] args) throws IOException, SQLException, InterruptedException {
+
+		/**
+		 * Clase Main donde se ejecuta el programa.
+		 * Se crea un objeto de la clase ACBMenu y se obtiene una instancia de la conexión con la base de datos mediante el método getInstance() de la clase ConnectionFactory.
+		 * Luego se crea un objeto de la clase Tablas y se inicializa con la conexión c.
+		 * Se muestra el menú principal con el método mainMenu() de la clase ACBMenu y se guarda en una variable de tipo entero llamada option.
+		 * Se entra en un bucle while en el que se ejecutan diferentes métodos de la clase Tablas dependiendo de la opción elegida en el menú. Si la opción es 12, se sale del bucle.
+		 * Si la opción elegida no es ninguna de las opciones válidas, se muestra un mensaje de error.
+		 */
+
 		ACBMenu menu = new ACBMenu();
-		Scanner sc = new Scanner(System.in);
 
 		ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 		Connection c = connectionFactory.connect();
 
 		Tablas tablas = new Tablas(c);
-
-		//Class.forName( "org.postgresql.Driver" );
-
 
 		int option = menu.mainMenu();
 		while (option > 0 && option < 13) {
@@ -71,9 +77,13 @@ public class ACBMain {
 					break;
 
 			default:
-				System.out.println("Introdueixi una de les opcions anteriors");
+				System.out.println("Introduce una de las opciones anteriores");
 				break;
 
+
+			}
+			if (option == 12) {
+				break;
 			}
 			option = menu.mainMenu();
 		}

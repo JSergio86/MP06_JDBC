@@ -11,6 +11,12 @@ public class ACBMenu {
 		super();
 	}
 
+	/**
+	 * Método para mostrar un menú principal en la consola y seleccionar una opción.
+	 * Este método muestra un menú en la consola con todas las opciones puestas
+	 * La función pide al usuario que introduzca una opción y, en caso de que no sea un número válido, se muestra un mensaje de error.
+	 * @return int La opción seleccionada por el usuario.
+	 */
 	public int mainMenu() {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
@@ -28,11 +34,11 @@ public class ACBMenu {
 			System.out.println("10. Eliminar un conjunto de registros");
 			System.out.println("11. Eliminar una tabla");
 			System.out.println("12. Sortir");
-			System.out.println("Esculli opció: ");
+			System.out.println("Escoge una opcion: ");
 			try {
 				option = Integer.parseInt(br.readLine());
 			} catch (NumberFormatException | IOException e) {
-				System.out.println("valor no vàlid");
+				System.out.println("valor no valido");
 				e.printStackTrace();
 
 			}
