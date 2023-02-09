@@ -365,7 +365,7 @@ public class Tablas {
     public void borrarRegistro() {
         try {
             Scanner sc = new Scanner(System.in);
-            System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas,");
+            System.out.println("Escribe la tabla que quieres borrar: jugadores,mapas,partidas,agentes,armas,jugadoragentes,jugadorarmas");
             String tabla = sc.nextLine();
 
             ResultSet rs= st.executeQuery("SELECT *"+ " FROM "+ tabla);
@@ -669,7 +669,7 @@ public class Tablas {
      * @throws SQLException
      */
     public void rellenarTablajugadorarmas() throws IOException, SQLException {
-        String csvFile = "src/CSV/PlayerWeapon.csv";
+        String csvFile = "src/CSV/jugadorarmas.csv";
         String line = "";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String sql = "INSERT INTO jugadorarmas VALUES (?,?,?,?,?,?,?,?) ON CONFLICT DO NOTHING;";

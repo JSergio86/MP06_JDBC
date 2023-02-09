@@ -32,8 +32,8 @@ idMapa INT,
 idPartida INT PRIMARY KEY,
 type TEXT,
 result TEXT,
-FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador),
-FOREIGN KEY (idMapa) REFERENCES Mapas(idMapa)
+FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador) ON DELETE CASCADE,
+FOREIGN KEY (idMapa) REFERENCES Mapas(idMapa) ON DELETE CASCADE
 );
 
 
@@ -54,8 +54,8 @@ adr FLOAT,
 acs FLOAT,
 hs TEXT,
 kast TEXT,
-FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador),
-FOREIGN KEY (idAgente) REFERENCES Agentes(idAgente)
+FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador) ON DELETE CASCADE,
+FOREIGN KEY (idAgente) REFERENCES Agentes(idAgente) ON DELETE CASCADE
 );
 
 CREATE TABLE Armas (
@@ -73,6 +73,6 @@ headshots TEXT,
 damageRound FLOAT,
 killsRound FLOAT,
 longestKill TEXT,
-FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador),
-FOREIGN KEY (idArma) REFERENCES Armas(idArma)
+FOREIGN KEY (idJugador) REFERENCES Jugadores(idJugador) ON DELETE CASCADE,
+FOREIGN KEY (idArma) REFERENCES Armas(idArma) ON DELETE CASCADE
 );
